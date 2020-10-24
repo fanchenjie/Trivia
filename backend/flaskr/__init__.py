@@ -39,9 +39,15 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
-  # @app.route('/categories')
-  # def get_categories():
-  #   db.query.all()
+  @app.route('/categories')
+  def get_categories():
+    data = {}
+    query = Category.query.all()
+    categories = []
+    for q in query:
+      categories.append(q.type)
+    data['categories'] = categories
+    return jsonify(data)
 
 
   '''
