@@ -27,9 +27,17 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods','GET,PATCH,POST,DELETE,OPTIONS')
     return response
 
-  @app.route('/')
-  def index():
-    return jsonify({'message':'hello'})
+  @app.errorhandler(500)
+  def internal_error(error):
+    return jsonify({
+      "success":False,
+      "error":500,
+      "message":"Internal error"
+    }),500
+
+  # @app.route('/')
+  # def index():
+  #   return jsonify({'message':'hello'})
 
 
 
@@ -63,6 +71,9 @@ def create_app(test_config=None):
   Clicking on the page numbers should update the questions. 
   '''
 
+  
+
+
   '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
@@ -81,6 +92,23 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
+  @app.route('/questions', methods = ['POST'])
+  def question_submission():
+     
+    try:
+      question = request.json['question']
+      # print(question)
+      answer = request.json['answer']
+      difficulty = request.json['difficulty']
+      category = request.json['category']
+      q = Question(question, answer, category, difficulty)
+      q.insert()
+    except:
+      # Question.session.rollback()
+      abort(500)
+    # finally:
+    #   Question.session.close()
+    return jsonify({'success':'true'})
 
   '''
   @TODO: 
