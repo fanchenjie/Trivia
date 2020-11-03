@@ -87,7 +87,7 @@ def create_app(test_config=None):
     categories = []
     for q in query:
       categories.append(q.type)
-    return jsonify({'success':True, 'questions':formatted_questions[start : end], 'total_questions':len(formatted_questions), 'categories':categories, 'currentCategory':"science"})
+    return jsonify({'success':True, 'questions':formatted_questions[start : end], 'total_questions':len(formatted_questions), 'categories':categories, 'currentCategory':None})
   
 
 
@@ -117,8 +117,8 @@ def create_app(test_config=None):
       # print(question)
       answer = request.json['answer']
       difficulty = request.json['difficulty']
-      category_id = request.json['category']
-      print(category_id)
+      category_id = request.json['category'] + 1
+      print(request.json)
       category = Category.query.filter_by(id = category_id).first().type
       q = Question(question, answer, category, difficulty)
       q.insert()
@@ -152,13 +152,15 @@ def create_app(test_config=None):
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_by_category(category_id):
     
-    
+    page = request.args.get('page', 1, type = int)
+    start = (page - 1)*10
+    end = start + 10
     category = Category.query.filter_by(id = (category_id+1)).first().type
-    print(category)
+    # print(category)
     questions = Question.query.filter_by(category=category).all()
     formatted_questions = [question.format() for question in questions]
-    print(len(formatted_questions))
-    return jsonify({'success':True, 'questions':formatted_questions, 'total_questions':len(formatted_questions), 'currentCategory':category})
+    # print({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
+    return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
 
 
 

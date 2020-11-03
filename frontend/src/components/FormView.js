@@ -10,7 +10,7 @@ class FormView extends Component {
       question: "",
       answer: "",
       difficulty: 1,
-      category: 1,
+      category: 0,
       categories: {}
     }
   }
@@ -50,6 +50,11 @@ class FormView extends Component {
       crossDomain: true,
       success: (result) => {
         document.getElementById("add-question-form").reset();
+        this.setState(() => ({
+          question: "",
+          answer: "",
+          difficulty: 1,
+          category: 0}))
         return;
       },
       error: (error) => {
@@ -60,6 +65,10 @@ class FormView extends Component {
   }
 
   handleChange = (event) => {
+    this.setState({[event.target.name]: parseInt(event.target.value, 10)})
+  }
+
+  handleChangeString = (event) => {
     this.setState({[event.target.name]: event.target.value})
   }
 
@@ -70,11 +79,11 @@ class FormView extends Component {
         <form className="form-view" id="add-question-form" onSubmit={this.submitQuestion}>
           <label>
             Question
-            <input type="text" name="question" onChange={this.handleChange}/>
+            <input type="text" name="question" onChange={this.handleChangeString}/>
           </label>
           <label>
             Answer
-            <input type="text" name="answer" onChange={this.handleChange}/>
+            <input type="text" name="answer" onChange={this.handleChangeString}/>
           </label>
           <label>
             Difficulty
