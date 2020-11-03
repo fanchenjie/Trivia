@@ -49,13 +49,16 @@ def create_app(test_config=None):
   '''
   @app.route('/categories')
   def get_categories():
-    data = {}
+   
     query = Category.query.all()
     categories = []
     for q in query:
       categories.append(q.type)
-    data['categories'] = categories
-    return jsonify(data)
+    
+    # categories = Category.query.all()
+    # formatted_categories = [category.format() for category in categories]
+    # return jsonify({'success': True, 'categories': formatted_categories})
+    return jsonify({'success': True, 'categories':categories})
 
 
   '''
@@ -70,7 +73,21 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+  @app.route('/questions')
+  def get_questions():
+    questions = Question.query.all()
+    page = request.args.get('page', 1, type = int)
+    start = (page - 1)*10
+    end = start + 10
+    formatted_questions = [question.format() for question in questions]
 
+    # categories = Category.query.all()
+    # formatted_categories = [category.format() for category in categories]
+    query = Category.query.all()
+    categories = []
+    for q in query:
+      categories.append(q.type)
+    return jsonify({'success':True, 'questions':formatted_questions[start : end], 'total_questions':len(formatted_questions), 'categories':categories, 'currentCategory':"science"})
   
 
 
