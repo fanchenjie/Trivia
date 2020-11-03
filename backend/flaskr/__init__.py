@@ -117,7 +117,9 @@ def create_app(test_config=None):
       # print(question)
       answer = request.json['answer']
       difficulty = request.json['difficulty']
-      category = request.json['category']
+      category_id = request.json['category']
+      print(category_id)
+      category = Category.query.filter_by(id = category_id).first().type
       q = Question(question, answer, category, difficulty)
       q.insert()
     except:
@@ -146,6 +148,19 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
+
+  @app.route('/categories/<int:category_id>/questions')
+  def get_questions_by_category(category_id):
+    
+    
+    category = Category.query.filter_by(id = (category_id+1)).first().type
+    print(category)
+    questions = Question.query.filter_by(category=category).all()
+    formatted_questions = [question.format() for question in questions]
+    print(len(formatted_questions))
+    return jsonify({'success':True, 'questions':formatted_questions, 'total_questions':len(formatted_questions), 'currentCategory':category})
+
+
 
 
   '''
