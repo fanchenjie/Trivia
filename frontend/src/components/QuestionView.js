@@ -14,6 +14,7 @@ class QuestionView extends Component {
       totalQuestions: 0,
       categories: {},
       currentCategory: null,
+      searchTerm: null,
     }
   }
 
@@ -30,7 +31,8 @@ class QuestionView extends Component {
           questions: result.questions,
           totalQuestions: result.total_questions,
           categories: result.categories,
-          currentCategory: result.current_category })
+          currentCategory: result.current_category,
+          searchTerm: result.search_term })
         return;
       },
       error: (error) => {
@@ -43,8 +45,13 @@ class QuestionView extends Component {
   selectPage(num) {
     console.log('page', num)
     console.log(this.state)
-    if(this.state.currentCategory == null)
-      this.setState({page: num}, () => this.getQuestions());
+    if(this.state.currentCategory == null){
+      if(this.state.searchTerm == null)
+        this.setState({page: num}, () => this.getQuestions());
+      else{
+        this.setState({page: num}, () => this.submitSearch(this.state.searchTerm,num));
+      }
+    }
     else{
       this.setState({page: num}, () => this.getByCategory(this.state.currentCategory, num));
     }
@@ -74,7 +81,8 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.currentCategory })
+          currentCategory: result.current_category,
+          searchTerm: result.search_term })
         return;
       },
       error: (error) => {
@@ -84,9 +92,9 @@ class QuestionView extends Component {
     })
   }
 
-  submitSearch = (searchTerm) => {
+  submitSearch = (searchTerm, page) => {
     $.ajax({
-      url: `/questions/searchTerm`, //TODO: update request URL
+      url: `/questions/searchTerm?page=${page}`, //TODO: update request URL
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
@@ -99,7 +107,8 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.current_category })
+          currentCategory: result.current_category,
+          searchTerm: result.search_term })
         return;
       },
       error: (error) => {

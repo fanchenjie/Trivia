@@ -98,7 +98,7 @@ def create_app(test_config=None):
     categories = []
     for q in query:
       categories.append(q.type)
-    return jsonify({'success':True, 'questions':formatted_questions[start : end], 'total_questions':len(formatted_questions), 'categories':categories, 'currentCategory':None})
+    return jsonify({'success':True, 'questions':formatted_questions[start : end], 'total_questions':len(formatted_questions), 'categories':categories, 'current_category':None, 'search_term':None})
   
 
 
@@ -169,7 +169,7 @@ def create_app(test_config=None):
     if len(formatted_questions) == 0:
         abort(404)
 
-    return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':None})
+    return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'current_category':None, 'search_term':search_term})
 
 
 
@@ -197,7 +197,7 @@ def create_app(test_config=None):
       abort(404)
 
     # print({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
-    return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
+    return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'current_category':category_id, 'search_term':None})
 
 
 
