@@ -35,6 +35,13 @@ def create_app(test_config=None):
       "message":"Internal error"
     }),500
 
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success":False,
+      "error":404,
+      "message":"Not Found"
+    }),404
   # @app.route('/')
   # def index():
   #   return jsonify({'message':'hello'})
@@ -55,6 +62,8 @@ def create_app(test_config=None):
     for q in query:
       categories.append(q.type)
     
+    if len(categories) == 0 :
+      abort(404)
     # categories = Category.query.all()
     # formatted_categories = [category.format() for category in categories]
     # return jsonify({'success': True, 'categories': formatted_categories})
@@ -81,6 +90,8 @@ def create_app(test_config=None):
     end = start + 10
     formatted_questions = [question.format() for question in questions]
 
+    if len(formatted_questions) == 0:
+      abort(404)
     # categories = Category.query.all()
     # formatted_categories = [category.format() for category in categories]
     query = Category.query.all()
@@ -98,6 +109,9 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
+
+
+
 
   '''
   @TODO: 
@@ -159,6 +173,10 @@ def create_app(test_config=None):
     # print(category)
     questions = Question.query.filter_by(category=category).all()
     formatted_questions = [question.format() for question in questions]
+
+    if len(formatted_questions) == 0:
+      abort(404)
+
     # print({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
     return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
 
