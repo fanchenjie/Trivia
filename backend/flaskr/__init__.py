@@ -125,7 +125,7 @@ def create_app(test_config=None):
   '''
   @app.route('/questions', methods = ['POST'])
   def question_submission():
-     
+
     try:
       question = request.json['question']
       # print(question)
@@ -153,6 +153,25 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+
+  @app.route('/questions/searchTerm', methods = ['POST'])
+  def get_question_by_search():
+
+    page = request.args.get('page', 1, type = int)
+    start = (page - 1)*10
+    end = start + 10
+
+    search_term = request.json['searchTerm']
+    search = '%{}%'.format(search_term)
+    questions = Question.query.filter(Question.question.ilike(search)).all()
+    formatted_questions = [question.format() for question in questions]
+
+    if len(formatted_questions) == 0:
+        abort(404)
+
+    return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':None})
+
+
 
   '''
   @TODO: 
