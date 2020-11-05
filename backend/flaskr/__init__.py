@@ -27,6 +27,12 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods','GET,PATCH,POST,DELETE,OPTIONS')
     return response
 
+  '''
+  @TODO: 
+  Create error handlers for all expected errors 
+  including 404 and 422. 
+  '''
+
   @app.errorhandler(500)
   def internal_error(error):
     return jsonify({
@@ -225,11 +231,31 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
 
-  '''
-  @TODO: 
-  Create error handlers for all expected errors 
-  including 404 and 422. 
-  '''
+  @app.route('/quizzes', methods = ['POST'])
+  def get_quiz_question():
+    category = request.json['quiz_category']['type']
+    
+    pre_questions = request.json['previous_questions']
+    print(category)
+    if category == 'click':
+      questions = Question.query.all()
+    else:
+      questions = Question.query.filter_by(category = category).all()
+    
+    print (len(questions))
+    if len(pre_questions) == len(questions):
+      question = None
+      return jsonify({'success': True, 'question':question})
+    else:
+      random_number = random.randint(0, len(questions)-1)
+      while( questions[random_number] in pre_questions ):
+        random_number = random.randint(0, len(questions))
+      question = questions[random_number]
+
+    formatted_question = question.format()
+    return jsonify({'success': True, 'question':formatted_question})
+
+
   
   return app
 
