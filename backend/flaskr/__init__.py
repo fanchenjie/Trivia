@@ -48,10 +48,6 @@ def create_app(test_config=None):
       "error":404,
       "message":"Not Found"
     }),404
-  # @app.route('/')
-  # def index():
-  #   return jsonify({'message':'hello'})
-
 
 
 
@@ -70,9 +66,7 @@ def create_app(test_config=None):
     
     if len(categories) == 0 :
       abort(404)
-    # categories = Category.query.all()
-    # formatted_categories = [category.format() for category in categories]
-    # return jsonify({'success': True, 'categories': formatted_categories})
+
     return jsonify({'success': True, 'categories':categories})
 
 
@@ -98,8 +92,7 @@ def create_app(test_config=None):
 
     if len(formatted_questions) == 0:
       abort(404)
-    # categories = Category.query.all()
-    # formatted_categories = [category.format() for category in categories]
+
     query = Category.query.all()
     categories = []
     for q in query:
@@ -154,10 +147,9 @@ def create_app(test_config=None):
       q = Question(question, answer, category, difficulty)
       q.insert()
     except:
-      # Question.session.rollback()
+
       abort(500)
-    # finally:
-    #   Question.session.close()
+
     return jsonify({'success':'true'})
 
   '''
@@ -206,14 +198,14 @@ def create_app(test_config=None):
     start = (page - 1)*10
     end = start + 10
     category = Category.query.filter_by(id = (category_id+1)).first().type
-    # print(category)
+   
     questions = Question.query.filter_by(category=category).all()
     formatted_questions = [question.format() for question in questions]
 
     if len(formatted_questions) == 0:
       abort(404)
 
-    # print({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'currentCategory':category_id})
+    
     return jsonify({'success':True, 'questions':formatted_questions[start:end], 'total_questions':len(formatted_questions), 'current_category':category_id, 'search_term':None})
 
 
@@ -234,21 +226,22 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods = ['POST'])
   def get_quiz_question():
     category = request.json['quiz_category']['type']
-    
     pre_questions = request.json['previous_questions']
-    print(category)
+   
+    
     if category == 'click':
       questions = Question.query.all()
     else:
       questions = Question.query.filter_by(category = category).all()
     
-    print (len(questions))
+    # if all questions are in pre_questions, return None
     if len(pre_questions) == len(questions):
       question = None
       return jsonify({'success': True, 'question':question})
+    # else return one random question not in pre_questions
     else:
-      random_number = random.randint(0, len(questions)-1)
-      while( questions[random_number] in pre_questions ):
+      random_number = random.randint(0, len(questions)-1)     
+      while( questions[random_number].format()['id'] in pre_questions ):
         random_number = random.randint(0, len(questions))
       question = questions[random_number]
 
