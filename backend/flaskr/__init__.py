@@ -59,12 +59,11 @@ def create_app(test_config=None):
     @app.route('/categories')
     def get_categories():
         query = Category.query.all()
-        categories = []
+        categories = {}
         for q in query:
-            categories.append(q.type)
+            categories[q.id] = q.type
         if len(categories) == 0:
             abort(404)
-
         return jsonify({'success': True, 'categories': categories})
     '''
     @TODO:
@@ -86,14 +85,12 @@ def create_app(test_config=None):
         start = (page - 1)*10
         end = start + 10
         formatted_questions = [question.format() for question in questions]
-
         if len(formatted_questions) == 0:
             abort(404)
-
         query = Category.query.all()
-        categories = []
+        categories = {}
         for q in query:
-            categories.append(q.type)
+            categories[q.id] = q.type
         return jsonify({'success': True,
                         'questions': formatted_questions[start:end],
                         'total_questions': len(formatted_questions),
@@ -128,21 +125,18 @@ def create_app(test_config=None):
     '''
     @app.route('/questions', methods=['POST'])
     def question_submission():
-
         try:
             question = request.json['question']
             # print(question)
             answer = request.json['answer']
             difficulty = request.json['difficulty']
-            category_id = request.json['category'] + 1
+            category_id = request.json['category']
             print(request.json)
             category = Category.query.filter_by(id=category_id).first().type
             q = Question(question, answer, category, difficulty)
             q.insert()
         except:
-
             abort(500)
-
         return jsonify({'success': 'true'})
 
     '''
@@ -166,7 +160,6 @@ def create_app(test_config=None):
         questions = \
             Question.query.filter(Question.question.ilike(search)).all()
         formatted_questions = [question.format() for question in questions]
-
         if len(formatted_questions) == 0:
                 abort(404)
         return jsonify({'success': True,
@@ -187,10 +180,9 @@ def create_app(test_config=None):
         page = request.args.get('page', 1, type=int)
         start = (page - 1)*10
         end = start + 10
-        category = Category.query.filter_by(id=(category_id+1)).first().type
+        category = Category.query.filter_by(id=(category_id)).first().type
         questions = Question.query.filter_by(category=category).all()
         formatted_questions = [question.format() for question in questions]
-
         if len(formatted_questions) == 0:
             abort(404)
         return jsonify({'success': True,
