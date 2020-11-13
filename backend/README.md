@@ -72,9 +72,12 @@ This README is missing documentation of your endpoints. Below is an example for 
 
 Endpoints
 GET '/categories'
-GET ...
-POST ...
-DELETE ...
+GET '/questions'
+GET '/categories/<category_id>/questions'
+POST '/questions'
+POST '/questions/searchTerm'
+POST '/quizzes'
+DELETE '/questions/<question_id>'
 
 GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
@@ -86,6 +89,156 @@ GET '/categories'
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
+
+GET '/questions'
+- Fetches a list of questions, number of total questions, current category, categories
+- Request Arguments: page
+- Returns: An object with keys, questions, that contains a list of question objects. 
+[
+{
+"answer": "1",
+"category": "Science",
+"difficulty": 1,
+"id": 37,
+"question": "1"
+},
+{
+"answer": "2",
+"category": "Science",
+"difficulty": 2,
+"id": 38,
+"question": "2"
+},
+{
+"answer": "3",
+"category": "Science",
+"difficulty": 1,
+"id": 39,
+"question": "3"
+},
+{
+"answer": "4",
+"category": "Science",
+"difficulty": 1,
+"id": 40,
+"question": "4"
+},
+{
+"answer": "5",
+"category": "Science",
+"difficulty": 1,
+"id": 41,
+"question": "5"
+},
+{
+"answer": "6",
+"category": "Science",
+"difficulty": 1,
+"id": 42,
+"question": "6"
+},
+{
+"answer": "7",
+"category": "Science",
+"difficulty": 5,
+"id": 43,
+"question": "7"
+},
+{
+"answer": "8",
+"category": "Science",
+"difficulty": 1,
+"id": 44,
+"question": "8"
+},
+{
+"answer": "9",
+"category": "Science",
+"difficulty": 1,
+"id": 45,
+"question": "9"
+},
+{
+"answer": "10",
+"category": "Science",
+"difficulty": 1,
+"id": 46,
+"question": "10"
+}
+],
+
+GET '/categories/<category_id>/questions'
+- Fetches a list of questions based on category
+- Request Arguments: category_id
+- Returns: An object with keys, questions, that contains a list of question objects. 
+[
+{
+"answer": "22",
+"category": "Art",
+"difficulty": 1,
+"id": 48,
+"question": "22"
+},
+{
+"answer": "23",
+"category": "Art",
+"difficulty": 1,
+"id": 49,
+"question": "23"
+},
+{
+"answer": "24",
+"category": "Art",
+"difficulty": 1,
+"id": 50,
+"question": "24"
+},
+{
+"answer": "25",
+"category": "Art",
+"difficulty": 1,
+"id": 59,
+"question": "25"
+}
+]
+
+POST '/questions'
+- Create a new question
+- Request Arguments: the question and answer text, category, and difficulty score
+- Returns: An object with a single key, success. 
+
+POST '/questions/searchTerm'
+- Get questions based on a search term
+- Request Arguments: searchTerm
+- Returns: An object with keys, questions, that contains a list of question objects.
+[
+{
+"answer": "22",
+"category": "Art",
+"difficulty": 1,
+"id": 48,
+"question": "22"
+}
+]
+
+POST '/quizzes'
+- Get questions to play the quiz
+- Request Arguments: category, previous question parameters
+- Returns: An object with a single key, question, that contains a question object.
+[
+{
+"answer": "25",
+"category": "Art",
+"difficulty": 1,
+"id": 59,
+"question": "25"
+}
+]
+
+DELETE '/questions/<question_id>'
+- Delete question based on question id
+- Request Arguments: question_id
+- Returns: An object with a single key, success.
 
 ```
 
