@@ -93,7 +93,14 @@ GET '/categories'
 GET '/questions'
 - Fetches a list of questions, number of total questions, current category, categories
 - Request Arguments: page
-- Returns: An object with keys, questions, that contains a list of question objects. 
+- Returns: An object with keys:
+  total_questions, the total number of questions contain the search term.
+  categories, contains a object of id: category_string key:value pairs.
+{'1' : "Science",
+ '2' : "Art"}
+  current_category.
+  search_term.
+  questions, that contains a list of question objects. 
 [
 {
 "answer": "1",
@@ -170,7 +177,11 @@ GET '/questions'
 GET '/categories/<category_id>/questions'
 - Fetches a list of questions based on category
 - Request Arguments: category_id
-- Returns: An object with keys, questions, that contains a list of question objects. 
+- Returns: An object with keys: 
+  total_questions, the total number of questions contain the search term.
+  current_category.
+  search_term.
+  questions, that contains a list of question objects. 
 [
 {
 "answer": "22",
@@ -205,19 +216,37 @@ GET '/categories/<category_id>/questions'
 POST '/questions'
 - Create a new question
 - Request Arguments: the question and answer text, category, and difficulty score
-- Returns: An object with a single key, success. 
+- Returns: An object with keys, success, total_questions. 
 
 POST '/questions/searchTerm'
 - Get questions based on a search term
 - Request Arguments: searchTerm
-- Returns: An object with keys, questions, that contains a list of question objects.
+- Returns: An object with keys: 
+  total_questions, the total number of questions contain the search term.
+  current_category.
+  search_term.
+  questions, that contains a list of question objects.
 [
 {
-"answer": "22",
+"answer": "3",
 "category": "Art",
 "difficulty": 1,
 "id": 48,
-"question": "22"
+"question": "3"
+},
+{
+"answer": "13",
+"category": "Science",
+"difficulty": 1,
+"id": 58,
+"question": "13"
+},
+{
+"answer": "23",
+"category": "Art",
+"difficulty": 1,
+"id": 88,
+"question": "23"
 }
 ]
 

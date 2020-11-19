@@ -60,7 +60,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'],'Not Found')
     # delete question
     def test_delete_question_by_id(self):
-        res = self.client().delete('/questions/68')
+        res = self.client().delete('/questions/69')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
