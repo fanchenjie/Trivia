@@ -85,7 +85,7 @@ def create_app(test_config=None):
         start = (page - 1)*10
         end = start + 10
         formatted_questions = [question.format() for question in questions]
-        if len(formatted_questions) == 0:
+        if len(formatted_questions) <= start:
             abort(404)
         query = Category.query.all()
         categories = {}
