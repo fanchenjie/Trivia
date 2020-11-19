@@ -10,7 +10,7 @@ class FormView extends Component {
       question: "",
       answer: "",
       difficulty: 1,
-      category: 0,
+      category: 1,
       categories: {}
     }
   }
@@ -54,7 +54,7 @@ class FormView extends Component {
           question: "",
           answer: "",
           difficulty: 1,
-          category: 0}))
+          category: 1}))
         return;
       },
       error: (error) => {
