@@ -36,13 +36,13 @@ def create_app(test_config=None):
     including 404 and 422.
     '''
 
-    @app.errorhandler(500)
+    @app.errorhandler(400)
     def internal_error(error):
         return jsonify({
             "success": False,
-            "error": 500,
-            "message": "Internal error"
-        }), 500
+            "error": 400,
+            "message": "Bad Request"
+        }), 400
 
     @app.errorhandler(404)
     def not_found(error):
@@ -51,6 +51,14 @@ def create_app(test_config=None):
             "error": 404,
             "message": "Not Found"
         }), 404
+
+    @app.errorhandler(422)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "Unprocessable"
+        }), 422
     '''
     @TODO:
     Create an endpoint to handle GET requests
@@ -105,13 +113,16 @@ def create_app(test_config=None):
     This removal will persist in the database and when you refresh the page.
     '''
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
-    def question_deletion(question_id):
+    def question_deletion(question_id):             
         question = \
             Question.query.filter(Question.id == question_id).one_or_none()
         if question is None:
             abort(404)
-        question.delete()
-        return jsonify({'success': True})
+        try:
+            question.delete()
+            return jsonify({'success': True})
+        except:
+            abort(422)
     '''
     @TODO:
     Create an endpoint to POST a new question,
@@ -126,18 +137,21 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def question_submission():
         try:
+            body = request.get_json()
             question = request.json['question']
-            # print(question)
             answer = request.json['answer']
             difficulty = request.json['difficulty']
             category_id = request.json['category']
-            print(request.json)
+        except:
+            abort(400)
+        try:
             category = Category.query.filter_by(id=category_id).first().type
             q = Question(question, answer, category, difficulty)
             q.insert()
         except:
-            abort(500)
-        return jsonify({'success': 'true'})
+            abort(422)
+        return jsonify({'success': True,
+                        'total_questions': len(Question.query.all())})
 
     '''
     @TODO:
@@ -155,13 +169,16 @@ def create_app(test_config=None):
         page = request.args.get('page', 1, type=int)
         start = (page - 1)*10
         end = start + 10
-        search_term = request.json['searchTerm']
+        try:
+            search_term = request.json['searchTerm']
+        except:
+            abort(400)
         search = '%{}%'.format(search_term)
         questions = \
             Question.query.filter(Question.question.ilike(search)).all()
         formatted_questions = [question.format() for question in questions]
         if len(formatted_questions) == 0:
-                abort(404)
+            abort(404)
         return jsonify({'success': True,
                         'questions': formatted_questions[start:end],
                         'total_questions': len(formatted_questions),
@@ -183,7 +200,7 @@ def create_app(test_config=None):
         category = Category.query.filter_by(id=(category_id)).first().type
         questions = Question.query.filter_by(category=category).all()
         formatted_questions = [question.format() for question in questions]
-        if len(formatted_questions) == 0:
+        if len(formatted_questions) <= start:
             abort(404)
         return jsonify({'success': True,
                         'questions': formatted_questions[start:end],
@@ -203,8 +220,11 @@ def create_app(test_config=None):
 
     @app.route('/quizzes', methods=['POST'])
     def get_quiz_question():
-        category = request.json['quiz_category']['type']
-        pre_questions = request.json['previous_questions']
+        try:
+            category = request.json['quiz_category']['type']
+            pre_questions = request.json['previous_questions']
+        except:
+            abort(400)
         if category == 'click':
             questions = Question.query.all()
         else:
