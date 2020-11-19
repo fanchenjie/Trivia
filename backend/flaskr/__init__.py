@@ -113,7 +113,7 @@ def create_app(test_config=None):
     This removal will persist in the database and when you refresh the page.
     '''
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
-    def question_deletion(question_id):             
+    def question_deletion(question_id):
         question = \
             Question.query.filter(Question.id == question_id).one_or_none()
         if question is None:
@@ -177,7 +177,7 @@ def create_app(test_config=None):
         questions = \
             Question.query.filter(Question.question.ilike(search)).all()
         formatted_questions = [question.format() for question in questions]
-        if len(formatted_questions) == 0:
+        if len(formatted_questions) != 0 and len(formatted_questions) <= start:
             abort(404)
         return jsonify({'success': True,
                         'questions': formatted_questions[start:end],

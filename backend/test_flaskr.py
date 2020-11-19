@@ -60,7 +60,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'],'Not Found')
     # delete question
     def test_delete_question_by_id(self):
-        res = self.client().delete('/questions/69')
+        res = self.client().delete('/questions/67')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -87,8 +87,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'Bad Request')
     # search by term
-    def test_search_question_by_searchTerm(self):
-        res = self.client().post('/questions/searchTerm?page=1', json={'searchTerm':'2'})
+    def test_search_question_by_searchTerm_with_result(self):
+        res = self.client().post('/questions/searchTerm?page=1', json={'searchTerm':'3'})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -97,6 +97,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['total_questions'])
         self.assertFalse(data['current_category'])
         self.assertTrue(data['search_term'])
+        self.assertEqual(data['total_questions'], 3)
+    def test_search_question_by_searchTerm_without_result(self):
+        res = self.client().post('/questions/searchTerm?page=1', json={'searchTerm':'a'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertEqual(len(data['questions']), 0)
+        self.assertFalse(data['current_category'])
+        self.assertTrue(data['search_term'])
+        self.assertEqual(data['total_questions'], 0)
     def test_400_bad_search_post_without_body(self):
         res = self.client().post('/questions/searchTerm')
         data = json.loads(res.data)
