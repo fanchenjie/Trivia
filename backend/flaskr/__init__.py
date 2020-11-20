@@ -141,11 +141,10 @@ def create_app(test_config=None):
             question = request.json['question']
             answer = request.json['answer']
             difficulty = request.json['difficulty']
-            category_id = request.json['category']
+            category = request.json['category']
         except:
             abort(400)
         try:
-            category = Category.query.filter_by(id=category_id).first().type
             q = Question(question, answer, category, difficulty)
             q.insert()
         except:
@@ -166,7 +165,7 @@ def create_app(test_config=None):
     '''
 
     @app.route('/questions/searchTerm', methods=['POST'])
-    def get_question_by_search():
+    def get_questions_by_search():
         page = request.args.get('page', 1, type=int)
         start = (page - 1)*10
         end = start + 10
@@ -198,8 +197,8 @@ def create_app(test_config=None):
         page = request.args.get('page', 1, type=int)
         start = (page - 1)*10
         end = start + 10
-        category = Category.query.filter_by(id=(category_id)).first().type
-        questions = Question.query.filter_by(category=category).all()
+        # category = Category.query.filter_by(id=(category_id)).first().type
+        questions = Question.query.filter_by(category=category_id).all()
         formatted_questions = [question.format() for question in questions]
         if len(formatted_questions) <= start:
             abort(404)
@@ -222,11 +221,11 @@ def create_app(test_config=None):
     @app.route('/quizzes', methods=['POST'])
     def get_quiz_question():
         try:
-            category = request.json['quiz_category']['type']
+            category = request.json['quiz_category']['id']
             pre_questions = request.json['previous_questions']
         except:
             abort(400)
-        if category == 'click':
+        if category == 0:
             questions = Question.query.all()
         else:
             questions = Question.query.filter_by(category=category).all()
@@ -238,7 +237,7 @@ def create_app(test_config=None):
         else:
             random_number = random.randint(0, len(questions)-1)
             while(questions[random_number].format()['id'] in pre_questions):
-                random_number = random.randint(0, len(questions))
+                random_number = random.randint(0, len(questions)-1)
             question = questions[random_number]
 
         formatted_question = question.format()
