@@ -151,6 +151,7 @@ def create_app(test_config=None):
         except:
             abort(422)
         return jsonify({'success': True,
+                        'question_id': q.id,
                         'total_questions': len(Question.query.all())})
 
     '''
