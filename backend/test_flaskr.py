@@ -32,9 +32,9 @@ class TriviaTestCase(unittest.TestCase):
             'category':1
         }
         # edit to test serch by term
-        # self.search_term_with_result = {
-        #     'searchTerm':'question'
-        # }
+        self.search_term_with_result = {
+            'searchTerm':'question'
+        }
         # self.total_questions_with_search_term = 6
         self.search_term_without_result = {
             'searchTerm':'xxxxxxxxxx'
